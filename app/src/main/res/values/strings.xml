@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="navigate_to_second_page">Navigate to second page</string>
+    <string name="hello_first_fragment">Hello fragment First</string>
+    <string name="hello_second_fragment">Hello fragment Second</string>
+
+    <string name="start_xml_activity">start XML Activity</string>
+    <string name="to_second_fragment">To Second Fragment</string>
+</resources>
