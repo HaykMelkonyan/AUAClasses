@@ -11,13 +11,10 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat">
-        <activity
-            android:name=".view.xml.ActivityWithFragmentNavigation"
-            android:exported="true">
 
-        </activity>
+        <activity android:name=".xml.ActivityWithFragmentNavigation"/>
         <activity
-            android:name=".view.compose.MainActivity"
+            android:name=".compose.ActivityWithComposeNavigation"
             android:exported="true"
             android:theme="@style/Theme.MyApplication">
             <intent-filter>

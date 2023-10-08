@@ -21,7 +21,7 @@ import org.tumo.myapplication.R
 import org.tumo.myapplication.ui.theme.MyApplicationTheme
 import org.tumo.myapplication.xml.ActivityWithFragmentNavigation
 
-class MainActivity : ComponentActivity() {
+class ActivityWithComposeNavigation : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
