@@ -12,9 +12,9 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat">
 
-        <activity android:name=".xml.ActivityWithFragmentNavigation"/>
+        <activity android:name=".view.xml.ActivityWithFragmentNavigation"/>
         <activity
-            android:name=".compose.ActivityWithComposeNavigation"
+            android:name=".view.compose.ActivityWithComposeNavigation"
             android:exported="true"
             android:theme="@style/Theme.MyApplication">
             <intent-filter>

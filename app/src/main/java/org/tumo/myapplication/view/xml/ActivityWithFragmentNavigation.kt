@@ -1,4 +1,4 @@
-package org.tumo.myapplication.xml
+package org.tumo.myapplication.view.xml
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity

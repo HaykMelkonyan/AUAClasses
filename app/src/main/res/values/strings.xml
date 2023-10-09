@@ -6,4 +6,5 @@
 
     <string name="start_xml_activity">start XML Activity</string>
     <string name="to_second_fragment">To Second Fragment</string>
+    <string name="load_some_data">load some data</string>
 </resources>
