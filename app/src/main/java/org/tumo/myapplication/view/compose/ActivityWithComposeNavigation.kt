@@ -6,19 +6,28 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
-import androidx.navigation.NavController
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import coil.compose.AsyncImage
 import org.tumo.myapplication.R
 import org.tumo.myapplication.ui.theme.MyApplicationTheme
 import org.tumo.myapplication.view.xml.ActivityWithFragmentNavigation
@@ -26,7 +35,7 @@ import org.tumo.myapplication.viewmodel.DataLoaderViewModel
 
 
 class ActivityWithComposeNavigation : ComponentActivity() {
-    val viewModel: DataLoaderViewModel by viewModels()
+    private val viewModel: DataLoaderViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -37,71 +46,86 @@ class ActivityWithComposeNavigation : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    Column {
-                        MainScreen()
-                        Button(onClick = {
-                            startActivity(
-                                Intent(
-                                    baseContext,
-                                    ActivityWithFragmentNavigation::class.java
-                                )
-                            )
-                        }) {
-                            Text(text = getString(R.string.start_xml_activity))
-                        }
-                        DataLoader()
-                    }
+                    MainScreen()
                 }
             }
+        }
+    }
+
+    @Preview
+    @Composable
+    private fun MainScreen() {
+        Column {
+            MainNavScreen()
+            NavigationXml()
+            DataLoader()
+        }
+    }
+
+    @Composable
+    private fun NavigationXml() {
+        Button(onClick = {
+            startActivity(
+                Intent(
+                    baseContext,
+                    ActivityWithFragmentNavigation::class.java
+                )
+            )
+        }) {
+            Text(text = getString(R.string.start_xml_activity))
         }
     }
 
     @Composable
     private fun DataLoader() {
         val result = viewModel.liveDataNames.observeAsState(listOf())
+        val images = viewModel.liveDataImages.observeAsState(listOf())
+        val sliderValue = remember { mutableFloatStateOf(0f) }
         Column {
             Button(onClick = {
                 viewModel.loadData()
+                viewModel.loadImages()
             }) {
                 Text(text = getString(R.string.load_some_data))
             }
-            DataComponent(result.value)
+            Spacer(modifier = Modifier.height(10.dp))
+            Slider(
+                value = sliderValue.floatValue,
+                valueRange = 0f..100f,
+                modifier = Modifier.padding(10.dp),
+                onValueChange = {
+                    sliderValue.floatValue = it
+                })
+            Spacer(Modifier.height(10.dp))
+            Text(text = sliderValue.floatValue.toString())
+            DataComponent(result.value, images.value)
+
+
         }
     }
 
 
     @Composable
-    private fun DataComponent(names: List<String>) {
+    private fun DataComponent(names: List<String>, images: List<String>) {
         LazyColumn {
-            items(names.size) {
-                Text(text = names[it])
+            val size = minOf(names.size, images.size)
+            items(size) { index ->
+                Card {
+                    Text(text = names[index])
+                    AsyncImage(model = images[index], contentDescription = "")
+                }
+                Spacer(modifier = Modifier.height(8.dp))
             }
         }
     }
 }
 
 @Composable
-fun MainScreen() {
+fun MainNavScreen() {
     val navController = rememberNavController()
 
     NavHost(navController, startDestination = "firstView") {
         composable("firstView") { FirstView(navController) }
         composable("secondView") { SecondView(navController) }
-    }
-}
-
-@Composable
-fun FirstView(navController: NavController) {
-    // Your UI for the first view
-    Button(onClick = { navController.navigate("secondView") }) {
-        Text(text = "Go to Second View")
-    }
-}
-
-@Composable
-fun SecondView(navController: NavController) {
-    // Your UI for the second view
-    Button(onClick = { navController.popBackStack() }) {
-        Text(text = "Back to First View")
     }
 }
