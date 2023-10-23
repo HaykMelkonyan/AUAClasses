@@ -29,6 +29,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import org.tumo.myapplication.R
+import org.tumo.myapplication.repository.NewsResponse
 import org.tumo.myapplication.ui.theme.MyApplicationTheme
 import org.tumo.myapplication.view.xml.ActivityWithFragmentNavigation
 import org.tumo.myapplication.viewmodel.DataLoaderViewModel
@@ -80,11 +81,13 @@ class ActivityWithComposeNavigation : ComponentActivity() {
     private fun DataLoader() {
         val result = viewModel.liveDataNames.observeAsState(listOf())
         val images = viewModel.liveDataImages.observeAsState(listOf())
+        val news = viewModel.liveDataNews.observeAsState()
         val sliderValue = remember { mutableFloatStateOf(0f) }
         Column {
             Button(onClick = {
                 viewModel.loadData()
                 viewModel.loadImages()
+                viewModel.loadNews()
             }) {
                 Text(text = getString(R.string.load_some_data))
             }
@@ -98,7 +101,7 @@ class ActivityWithComposeNavigation : ComponentActivity() {
                 })
             Spacer(Modifier.height(10.dp))
             Text(text = sliderValue.floatValue.toString())
-            DataComponent(result.value, images.value)
+            DataComponent(news.value)
 
 
         }
@@ -106,16 +109,18 @@ class ActivityWithComposeNavigation : ComponentActivity() {
 
 
     @Composable
-    private fun DataComponent(names: List<String>, images: List<String>) {
+    private fun DataComponent(news: NewsResponse?) {
         LazyColumn {
-            val size = minOf(names.size, images.size)
-            items(size) { index ->
-                Card {
-                    Text(text = names[index])
-                    AsyncImage(model = images[index], contentDescription = "")
+            news?.articles?.let { articles ->
+                items(articles.size) { index ->
+                    Card {
+                        Text(text = articles[index].author?:"")
+                        AsyncImage(model = articles[index].urlToImage?:"", contentDescription = "")
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
-                Spacer(modifier = Modifier.height(8.dp))
             }
+
         }
     }
 }
